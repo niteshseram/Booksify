@@ -24,11 +24,11 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    brand: {
+    author: {
       type: String,
       required: true,
     },
-    category: {
+    genre: {
       type: String,
       required: true,
     },
