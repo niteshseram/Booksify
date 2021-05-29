@@ -13,3 +13,16 @@ h3 {
 .rating span {
   margin: 0.1rem;
 }
+
+.card {
+  height: 100%;
+}
+.card-body {
+  padding: 20px 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.card-title-container {
+  flex-grow: 1;
+}
