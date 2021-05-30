@@ -26,3 +26,11 @@ h3 {
 .card-title-container {
   flex-grow: 1;
 }
+
+.minus,
+.plus {
+  padding: 0 8px;
+}
+.qty-label {
+  padding: 0px 10px;
+}
