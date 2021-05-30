@@ -6,6 +6,7 @@ import { errorHandler, notFound } from "./middleware/error.js";
 
 //import routes
 import productRoutes from "./routes/product.js";
+import userRoutes from "./routes/user.js";
 
 dotenv.config();
 
@@ -13,12 +14,15 @@ connectDB();
 
 const app = express();
 
+app.use(express.json());
+
 //routes
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
 app.use("/api/products", productRoutes);
+app.use("/api/users", userRoutes);
 
 // middleware
 app.use(notFound);
