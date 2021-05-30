@@ -16,7 +16,7 @@ import Message from "../components/Message";
 import { listProductDetails } from "../actions/product";
 
 const ProductPage = ({ history, match }) => {
-  const [qty, setQty] = useState(0);
+  const [qty, setQty] = useState(1);
 
   const dispatch = useDispatch();
 
@@ -90,7 +90,7 @@ const ProductPage = ({ history, match }) => {
                         <Button
                           className="minus"
                           onClick={() => setQty(qty - 1)}
-                          disabled={qty === 0}
+                          disabled={qty <= 1}
                         >
                           -
                         </Button>
