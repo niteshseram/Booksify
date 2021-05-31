@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "./../components/Message";
 import Loader from "./../components/Loader";
 import { getUserDetails, updateUserProfile } from "./../actions/user";
+import { USER_UPDATE_PROFILE_RESET } from "../constants/user";
 
 const ProfilePage = ({ location, history }) => {
   const [name, setName] = useState("");
@@ -28,14 +28,15 @@ const ProfilePage = ({ location, history }) => {
     if (!userInfo) {
       history.push("/login");
     } else {
-      if (!user.name) {
+      if (!user || !user.name || success) {
+        dispatch({ type: USER_UPDATE_PROFILE_RESET });
         dispatch(getUserDetails("profile"));
       } else {
         setName(user.name);
         setEmail(user.email);
       }
     }
-  }, [history, dispatch, userInfo, user]);
+  }, [history, dispatch, userInfo, user, success]);
 
   const submitHandler = (e) => {
     e.preventDefault();
