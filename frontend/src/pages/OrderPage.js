@@ -1,24 +1,57 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import DropIn from "braintree-web-drop-in-react";
 import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import asyncHandler from "express-async-handler";
 import Message from "../components/Message";
 import Loader from "./../components/Loader";
-import { getOrderDetails } from "./../actions/order";
+import { getOrderDetails, payOrder } from "./../actions/order";
+import { ORDER_PAY_RESET } from "../constants/order";
+import { getPaymentToken, processPayment } from "../actions/payment";
 
 const OrderPage = ({ match }) => {
   const orderId = match.params.id;
+
+  let instance = {};
 
   const dispatch = useDispatch();
 
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, loading, error } = orderDetails;
 
+  const orderPay = useSelector((state) => state.orderPay);
+  const { success: successPay } = orderPay;
+
+  const paymentToken = useSelector((state) => state.paymentToken);
+  const {
+    payment,
+    loading: loadingToken,
+    success: successToken,
+  } = paymentToken;
+
   useEffect(() => {
-    if (!order || order._id !== orderId) {
+    if (!order || order._id !== orderId || successPay) {
+      dispatch({ type: ORDER_PAY_RESET });
+      dispatch(getPaymentToken());
       dispatch(getOrderDetails(orderId));
     }
-  }, [dispatch, orderId, order]);
+  }, [dispatch, orderId, order, successPay]);
+
+  const onPurchase = asyncHandler(async () => {
+    let nonce;
+    let data = await instance.requestPaymentMethod();
+
+    nonce = data.nonce;
+
+    const paymentData = {
+      paymentMethodNonce: nonce,
+      amount: order.totalPrice,
+    };
+
+    dispatch(processPayment(paymentData));
+    dispatch(payOrder(orderId));
+  });
 
   return loading ? (
     <Loader />
@@ -132,6 +165,24 @@ const OrderPage = ({ match }) => {
                   <Col>Rs. {order.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
+              {!order.isPaid && (
+                <ListGroup.Item>
+                  {loadingToken && <Loader />}
+                  {!successToken ? (
+                    <Loader />
+                  ) : (
+                    <>
+                      <DropIn
+                        options={{ authorization: payment.clientToken }}
+                        onInstance={(inst) => (instance = inst)}
+                      />
+                      <Button onClick={onPurchase} className="d-grid col-12">
+                        Buy
+                      </Button>
+                    </>
+                  )}
+                </ListGroup.Item>
+              )}
             </ListGroup>
           </Card>
         </Col>
