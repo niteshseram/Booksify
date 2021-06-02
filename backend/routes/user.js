@@ -2,6 +2,7 @@ import express from "express";
 const router = express.Router();
 import {
   authUser,
+  deleteUser,
   getUserProfile,
   getUsers,
   registerUser,
@@ -15,5 +16,7 @@ router
   .route("/profile")
   .get(isSignedIn, getUserProfile)
   .put(isSignedIn, updateUserProfile);
+
+router.route("/:id").delete(isSignedIn, isAdmin, deleteUser);
 
 export default router;
