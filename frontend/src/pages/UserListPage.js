@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Message from "./../components/Message";
 import Loader from "./../components/Loader";
 import { LinkContainer } from "react-router-bootstrap";
-import { listUsers } from "../actions/user";
+import { deleteUser, listUsers } from "../actions/user";
 
 const UserListPage = ({ history }) => {
   const dispatch = useDispatch();
@@ -15,16 +15,21 @@ const UserListPage = ({ history }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const userDelete = useSelector((state) => state.userDelete);
+  const { success: successDelete } = userDelete;
+
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
       dispatch(listUsers());
     } else {
       history.push("/login");
     }
-  }, [dispatch, history, userInfo]);
+  }, [dispatch, history, userInfo, successDelete]);
 
   const deleteHandler = (id) => {
-    console.log(id);
+    if (window.confirm("Are you sure")) {
+      dispatch(deleteUser(id));
+    }
   };
 
   return (
@@ -35,7 +40,7 @@ const UserListPage = ({ history }) => {
       ) : error ? (
         <Message variant="danger">{error}</Message>
       ) : (
-        <Table stripped bordered hover responsive className="table-sm">
+        <Table striped bordered hover responsive className="table-sm">
           <thead>
             <tr>
               <th>ID</th>
