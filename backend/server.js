@@ -8,6 +8,7 @@ import { errorHandler, notFound } from "./middleware/error.js";
 import productRoutes from "./routes/product.js";
 import userRoutes from "./routes/user.js";
 import orderRoutes from "./routes/order.js";
+import paymentRoutes from "./routes/payment.js";
 
 dotenv.config();
 
@@ -25,6 +26,11 @@ app.get("/", (req, res) => {
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/payment", paymentRoutes);
+
+app.get("/api/config/paypal", (req, res) =>
+  res.send(process.env.PAYPAL_CLIENT_ID)
+);
 
 // middleware
 app.use(notFound);
