@@ -24,9 +24,13 @@ export const getToken = (req, res) => {
 export const processPayment = (req, res) => {
   let nonceFromTheClient = req.body.paymentMethodNonce;
   let amountFromTheClient = req.body.amount;
-
+  let orderId = req.body.orderId;
+  gateway.merchantAccount.createForCurrency({
+    currency: "INR",
+  });
   gateway.transaction.sale(
     {
+      orderId: orderId,
       amount: amountFromTheClient,
       paymentMethodNonce: nonceFromTheClient,
       options: {

@@ -9,6 +9,7 @@ import Loader from "./../components/Loader";
 import { getOrderDetails, payOrder } from "./../actions/order";
 import { ORDER_PAY_RESET } from "../constants/order";
 import { getPaymentToken, processPayment } from "../actions/payment";
+import { PAYMENT_PROCESS_RESET } from "./../constants/payment";
 
 const OrderPage = ({ match }) => {
   const orderId = match.params.id;
@@ -21,7 +22,14 @@ const OrderPage = ({ match }) => {
   const { order, loading, error } = orderDetails;
 
   const orderPay = useSelector((state) => state.orderPay);
-  const { success: successPay } = orderPay;
+  const { success: successOrder } = orderPay;
+
+  const paymentProcess = useSelector((state) => state.paymentProcess);
+  const {
+    success: successPayment,
+    paymentData,
+    loading: paymentLoading,
+  } = paymentProcess;
 
   const paymentToken = useSelector((state) => state.paymentToken);
   const {
@@ -31,12 +39,21 @@ const OrderPage = ({ match }) => {
   } = paymentToken;
 
   useEffect(() => {
-    if (!order || order._id !== orderId || successPay) {
+    if (successPayment) {
+      const paymentResult = {
+        id: paymentData.transaction.id,
+        status: "COMPLETED",
+        update_time: paymentData.transaction.updatedAt,
+      };
+      dispatch(payOrder(orderId, paymentResult));
+    }
+    if (!order || order._id !== orderId || successOrder) {
       dispatch({ type: ORDER_PAY_RESET });
+      dispatch({ type: PAYMENT_PROCESS_RESET });
       dispatch(getPaymentToken());
       dispatch(getOrderDetails(orderId));
     }
-  }, [dispatch, orderId, order, successPay]);
+  }, [dispatch, orderId, order, successOrder, paymentData, successPayment]);
 
   const onPurchase = asyncHandler(async () => {
     let nonce;
@@ -44,13 +61,12 @@ const OrderPage = ({ match }) => {
 
     nonce = data.nonce;
 
-    const paymentData = {
+    const processPaymentData = {
       paymentMethodNonce: nonce,
       amount: order.totalPrice,
+      orderId: orderId,
     };
-
-    dispatch(processPayment(paymentData));
-    dispatch(payOrder(orderId));
+    dispatch(processPayment(processPaymentData));
   });
 
   return loading ? (
@@ -168,6 +184,7 @@ const OrderPage = ({ match }) => {
               {!order.isPaid && (
                 <ListGroup.Item>
                   {loadingToken && <Loader />}
+                  {paymentLoading && <Loader />}
                   {!successToken ? (
                     <Loader />
                   ) : (

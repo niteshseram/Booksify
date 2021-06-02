@@ -5,6 +5,7 @@ import {
   PAYMENT_PROCESS_REQUEST,
   PAYMENT_PROCESS_SUCCESS,
   PAYMENT_PROCESS_FAIL,
+  PAYMENT_PROCESS_RESET,
 } from "./../constants/payment";
 
 export const paymentTokenReducer = (state = {}, action) => {
@@ -29,7 +30,7 @@ export const paymentTokenReducer = (state = {}, action) => {
   }
 };
 
-export const paymentProcessReducer = (state = {}, action) => {
+export const paymentProcessReducer = (state = { paymentData: {} }, action) => {
   switch (action.type) {
     case PAYMENT_PROCESS_REQUEST:
       return {
@@ -39,12 +40,15 @@ export const paymentProcessReducer = (state = {}, action) => {
       return {
         loading: false,
         success: true,
+        paymentData: action.payload,
       };
     case PAYMENT_PROCESS_FAIL:
       return {
         loading: false,
         error: action.payload,
       };
+    case PAYMENT_PROCESS_RESET:
+      return {};
     default:
       return state;
   }
