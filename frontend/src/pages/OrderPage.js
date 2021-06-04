@@ -6,12 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import asyncHandler from "express-async-handler";
 import Message from "../components/Message";
 import Loader from "./../components/Loader";
-import { getOrderDetails, payOrder } from "./../actions/order";
-import { ORDER_PAY_RESET } from "../constants/order";
+import { deliverOrder, getOrderDetails, payOrder } from "./../actions/order";
+import { ORDER_DELIVER_RESET, ORDER_PAY_RESET } from "../constants/order";
 import { getPaymentToken, processPayment } from "../actions/payment";
 import { PAYMENT_PROCESS_RESET } from "./../constants/payment";
 
-const OrderPage = ({ match }) => {
+const OrderPage = ({ match, history }) => {
   const orderId = match.params.id;
 
   let instance = {};
@@ -23,6 +23,12 @@ const OrderPage = ({ match }) => {
 
   const orderPay = useSelector((state) => state.orderPay);
   const { success: successOrder } = orderPay;
+
+  const orderDeliver = useSelector((state) => state.orderDeliver);
+  const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
   const paymentProcess = useSelector((state) => state.paymentProcess);
   const {
@@ -39,6 +45,9 @@ const OrderPage = ({ match }) => {
   } = paymentToken;
 
   useEffect(() => {
+    if (!userInfo) {
+      history.push("/login");
+    }
     if (successPayment) {
       const paymentResult = {
         id: paymentData.transaction.id,
@@ -47,13 +56,24 @@ const OrderPage = ({ match }) => {
       };
       dispatch(payOrder(orderId, paymentResult));
     }
-    if (!order || order._id !== orderId || successOrder) {
+    if (!order || order._id !== orderId || successOrder || successDeliver) {
       dispatch({ type: ORDER_PAY_RESET });
+      dispatch({ type: ORDER_DELIVER_RESET });
       dispatch({ type: PAYMENT_PROCESS_RESET });
       dispatch(getPaymentToken());
       dispatch(getOrderDetails(orderId));
     }
-  }, [dispatch, orderId, order, successOrder, paymentData, successPayment]);
+  }, [
+    dispatch,
+    orderId,
+    order,
+    successOrder,
+    paymentData,
+    successPayment,
+    successDeliver,
+    history,
+    userInfo,
+  ]);
 
   const onPurchase = asyncHandler(async () => {
     let nonce;
@@ -68,6 +88,10 @@ const OrderPage = ({ match }) => {
     };
     dispatch(processPayment(processPaymentData));
   });
+
+  const deliverHandler = () => {
+    dispatch(deliverOrder(order));
+  };
 
   return loading ? (
     <Loader />
@@ -200,6 +224,21 @@ const OrderPage = ({ match }) => {
                   )}
                 </ListGroup.Item>
               )}
+              {loadingDeliver && <Loader />}
+              {userInfo &&
+                userInfo.isAdmin &&
+                order.isPaid &&
+                !order.isDelivered && (
+                  <ListGroup.Item>
+                    <Button
+                      type="button"
+                      className="d-grid col-12"
+                      onClick={deliverHandler}
+                    >
+                      Mark As Delivered
+                    </Button>
+                  </ListGroup.Item>
+                )}
             </ListGroup>
           </Card>
         </Col>
