@@ -6,6 +6,7 @@ import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { listProducts } from "./../actions/product";
 import Paginate from "./../components/Paginate";
+import ProductCarousel from "../components/ProductCarousel";
 
 const HomePage = ({ match }) => {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ const HomePage = ({ match }) => {
 
   return (
     <>
+      {!keyword && <ProductCarousel />}
       <h1>Latest Products</h1>
       {loading ? (
         <Loader />
@@ -44,7 +46,11 @@ const HomePage = ({ match }) => {
               </Col>
             ))}
           </Row>
-          <Paginate pages={pages} keyword={keyword ? keyword : ""} />
+          <Paginate
+            pages={pages}
+            page={page}
+            keyword={keyword ? keyword : ""}
+          />
         </>
       )}
     </>
