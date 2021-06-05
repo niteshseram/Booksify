@@ -7,6 +7,7 @@ import Loader from "../components/Loader";
 import { listProducts } from "./../actions/product";
 import Paginate from "./../components/Paginate";
 import ProductCarousel from "../components/ProductCarousel";
+import Meta from "../components/Meta";
 
 const HomePage = ({ match }) => {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ const HomePage = ({ match }) => {
 
   return (
     <>
+      <Meta />
       {!keyword && <ProductCarousel />}
       <h1>Latest Products</h1>
       {loading ? (

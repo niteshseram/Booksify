@@ -15,6 +15,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { listProductDetails, createProductReview } from "../actions/product";
 import { PRODUCT_CREATE_REVIEW_RESET } from "./../constants/product";
+import Meta from "./../components/Meta";
 
 const ProductPage = ({ history, match }) => {
   const [qty, setQty] = useState(1);
@@ -62,6 +63,7 @@ const ProductPage = ({ history, match }) => {
         <Message variant="danger">{error}</Message>
       ) : (
         <>
+          <Meta title={product.name} />
           <Row>
             <Col md={6}>
               <Image src={product.image} alt={product.name} fluid />
