@@ -38,6 +38,7 @@ function App() {
           <Route path="/admin/user/:id/edit" component={UserEditPage} />
           <Route path="/admin/product/:id/edit" component={ProductEditPage} />
           <Route path="/admin/orderlist" component={OrderListPage} />
+          <Route path="/search/:keyword" component={HomePage} exact />
           <Route path="/" component={HomePage} exact />
         </Container>
       </main>
