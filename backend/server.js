@@ -25,6 +25,8 @@ if (process.env.NODE_ENV === "development") {
 }
 
 //routes
+app.get("/api/ga", (req, res) => res.json(process.env.TRACKING_ID));
+
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
