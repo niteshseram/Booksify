@@ -4,6 +4,9 @@
   "description": "Booksify App",
   "main": "server.js",
   "type": "module",
+  "engines":{
+    "node":"16.2.0"
+  },
   "scripts": {
     "start": "node backend/server",
     "server": "nodemon backend/server",
