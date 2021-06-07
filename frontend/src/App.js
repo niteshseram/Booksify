@@ -24,7 +24,8 @@ function App() {
       <Header />
       <main className="py-3">
         <Container>
-          <Route path="/login" component={LoginPage} />
+          <Route path="/login" component={LoginPage} exact />
+          <Route path="/login/:guest" component={LoginPage} exact />
           <Route path="/register" component={RegisterPage} />
           <Route path="/profile" component={ProfilePage} />
           <Route path="/shipping" component={ShippingPage} />
