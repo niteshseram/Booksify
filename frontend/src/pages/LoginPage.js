@@ -7,7 +7,9 @@ import Loader from "./../components/Loader";
 import FormContainer from "./../components/FormContainer";
 import { login } from "./../actions/user";
 
-const LoginPage = ({ location, history }) => {
+const LoginPage = ({ location, history, match }) => {
+  const guest = match.params.guest;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -23,7 +25,11 @@ const LoginPage = ({ location, history }) => {
     if (userInfo) {
       history.push(redirect);
     }
-  }, [history, redirect, userInfo]);
+    if (guest) {
+      setEmail("john@example.com");
+      setPassword("user");
+    }
+  }, [history, redirect, userInfo, guest]);
 
   const submitHandler = (e) => {
     e.preventDefault();
