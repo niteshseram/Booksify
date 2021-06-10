@@ -72,7 +72,11 @@ const ProductPage = ({ history, match }) => {
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <h2>{product.name}</h2>
+                  <p>
+                    by <span className="text-info">{product.author}</span>
+                  </p>
                 </ListGroup.Item>
+                <ListGroup.Item>Genre: {product.genre}</ListGroup.Item>
                 <ListGroup.Item>
                   <Rating
                     value={Number(product.rating)}
