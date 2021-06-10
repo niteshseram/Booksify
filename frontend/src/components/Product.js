@@ -15,6 +15,9 @@ const Product = ({ product }) => {
             <strong>{product.name}</strong>
           </Card.Title>
         </Link>
+        <p>
+          by <span className="text-info">{product.author}</span>
+        </p>
         <Card.Text as="div">
           <Rating
             value={product.rating}
