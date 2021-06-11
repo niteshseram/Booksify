@@ -21,6 +21,7 @@ const ProductPage = ({ history, match }) => {
   const [qty, setQty] = useState(1);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [showText, setShowText] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -65,10 +66,10 @@ const ProductPage = ({ history, match }) => {
         <>
           <Meta title={product.name} />
           <Row>
-            <Col md={6}>
+            <Col md={4}>
               <Image src={product.image} alt={product.name} fluid />
             </Col>
-            <Col md={3}>
+            <Col md={5}>
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <h2>{product.name}</h2>
@@ -84,8 +85,16 @@ const ProductPage = ({ history, match }) => {
                   />
                 </ListGroup.Item>
                 <ListGroup.Item>Price: Rs. {product.price}</ListGroup.Item>
-                <ListGroup.Item>
-                  Description: {product.description}
+                <ListGroup.Item style={{ textAlign: "justify" }}>
+                  Description: {(product.description + "").substring(0, 350)}
+                  {showText && (
+                    <span>{(product.description + "").substring(350)}</span>
+                  )}
+                  <p>
+                    <Link onClick={() => setShowText(!showText)}>
+                      {showText ? "See less" : "See more"}
+                    </Link>
+                  </p>
                 </ListGroup.Item>
               </ListGroup>
             </Col>
