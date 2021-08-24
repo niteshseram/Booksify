@@ -1,6 +1,6 @@
 # Booksify
 
-Booksify is a online book store where you can buy your favorite books. It is built using MERN stack and Redux with paypal payment gateway.
+Booksify is an online book store where you can buy your favorite books. It is built using MERN stack and Redux with paypal payment gateway.
 
 ## Here are some screenshot of the website
 
